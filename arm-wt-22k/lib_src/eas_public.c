@@ -160,7 +160,10 @@ EAS_BOOL EAS_StreamReady (S_EAS_DATA *pEASData, EAS_HANDLE pStream)
 */
 EAS_RESULT EAS_IntSetStrmParam (S_EAS_DATA *pEASData, EAS_HANDLE pStream, EAS_INT param, EAS_I32 value)
 {
-    S_SYNTH *pSynth;
+    union {
+        S_SYNTH *s;
+        EAS_I32 i;
+    } pSynth;
 
     /* try to set the parameter using stream interface */
     if (EAS_SetStreamParameter(pEASData, pStream, param, value) == EAS_SUCCESS)
@@ -168,10 +171,10 @@ EAS_RESULT EAS_IntSetStrmParam (S_EAS_DATA *pEASData, EAS_HANDLE pStream, EAS_IN
 
     /* get a pointer to the synth object and set it directly */
     /*lint -e{740} we are cheating by passing a pointer through this interface */
-    if (EAS_GetStreamParameter(pEASData, pStream, PARSER_DATA_SYNTH_HANDLE, (EAS_I32*) &pSynth) != EAS_SUCCESS)
+    if (EAS_GetStreamParameter(pEASData, pStream, PARSER_DATA_SYNTH_HANDLE, &pSynth.i) != EAS_SUCCESS)
         return EAS_ERROR_INVALID_PARAMETER;
 
-    if (pSynth == NULL)
+    if (pSynth.s == NULL)
         return EAS_ERROR_INVALID_PARAMETER;
 
     switch (param)
@@ -180,31 +183,31 @@ EAS_RESULT EAS_IntSetStrmParam (S_EAS_DATA *pEASData, EAS_HANDLE pStream, EAS_IN
 #ifdef DLS_SYNTHESIZER
         case PARSER_DATA_DLS_COLLECTION:
             {
-                EAS_RESULT result = VMSetDLSLib(pSynth, (EAS_DLSLIB_HANDLE) value);
+                EAS_RESULT result = VMSetDLSLib(pSynth.s, (EAS_DLSLIB_HANDLE) value);
                 if (result == EAS_SUCCESS)
                 {
                     DLSAddRef((S_DLS*) value);
-                    VMInitializeAllChannels(pEASData->pVoiceMgr, pSynth);
+                    VMInitializeAllChannels(pEASData->pVoiceMgr, pSynth.s);
                 }
                 return result;
             }
 #endif
 
         case PARSER_DATA_EAS_LIBRARY:
-            return VMSetEASLib(pSynth, (EAS_SNDLIB_HANDLE) value);
+            return VMSetEASLib(pSynth.s, (EAS_SNDLIB_HANDLE) value);
 
         case PARSER_DATA_POLYPHONY:
-            return VMSetPolyphony(pEASData->pVoiceMgr, pSynth, value);
+            return VMSetPolyphony(pEASData->pVoiceMgr, pSynth.s, value);
 
         case PARSER_DATA_PRIORITY:
-            return VMSetPriority(pEASData->pVoiceMgr, pSynth, value);
+            return VMSetPriority(pEASData->pVoiceMgr, pSynth.s, value);
 
         case PARSER_DATA_TRANSPOSITION:
-            VMSetTranposition(pSynth, value);
+            VMSetTranposition(pSynth.s, value);
             break;
 
         case PARSER_DATA_VOLUME:
-            VMSetVolume(pSynth, (EAS_U16) value);
+            VMSetVolume(pSynth.s, (EAS_U16) value);
             break;
 
         default:
@@ -226,7 +229,10 @@ EAS_RESULT EAS_IntSetStrmParam (S_EAS_DATA *pEASData, EAS_HANDLE pStream, EAS_IN
 */
 EAS_RESULT EAS_IntGetStrmParam (S_EAS_DATA *pEASData, EAS_HANDLE pStream, EAS_INT param, EAS_I32 *pValue)
 {
-    S_SYNTH *pSynth;
+    union {
+        S_SYNTH *s;
+        EAS_I32 i;
+    } pSynth;
 
     /* try to set the parameter */
     if (EAS_GetStreamParameter(pEASData, pStream, param, pValue) == EAS_SUCCESS)
@@ -234,26 +240,26 @@ EAS_RESULT EAS_IntGetStrmParam (S_EAS_DATA *pEASData, EAS_HANDLE pStream, EAS_IN
 
     /* get a pointer to the synth object and retrieve data directly */
     /*lint -e{740} we are cheating by passing a pointer through this interface */
-    if (EAS_GetStreamParameter(pEASData, pStream, PARSER_DATA_SYNTH_HANDLE, (EAS_I32*) &pSynth) != EAS_SUCCESS)
+    if (EAS_GetStreamParameter(pEASData, pStream, PARSER_DATA_SYNTH_HANDLE, &pSynth.i) != EAS_SUCCESS)
         return EAS_ERROR_INVALID_PARAMETER;
 
-    if (pSynth == NULL)
+    if (pSynth.s == NULL)
         return EAS_ERROR_INVALID_PARAMETER;
 
     switch (param)
     {
         case PARSER_DATA_POLYPHONY:
-            return VMGetPolyphony(pEASData->pVoiceMgr, pSynth, pValue);
+            return VMGetPolyphony(pEASData->pVoiceMgr, pSynth.s, pValue);
 
         case PARSER_DATA_PRIORITY:
-            return VMGetPriority(pEASData->pVoiceMgr, pSynth, pValue);
+            return VMGetPriority(pEASData->pVoiceMgr, pSynth.s, pValue);
 
         case PARSER_DATA_TRANSPOSITION:
-            VMGetTranposition(pSynth, pValue);
+            VMGetTranposition(pSynth.s, pValue);
             break;
 
         case PARSER_DATA_NOTE_COUNT:
-            *pValue = VMGetNoteCount(pSynth);
+            *pValue = VMGetNoteCount(pSynth.s);
             break;
 
         default:
