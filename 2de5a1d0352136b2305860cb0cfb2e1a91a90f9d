@@ -1,0 +1,9 @@
+Change-Id: I2de5a1d0352136b2305860cb0cfb2e1a91a90f9d
+Code-Review+2: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Verified+1: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Code-Review+1: Bernhard Rosenkraenzer <Bernhard.Rosenkranzer@linaro.org>
+Submitted-by: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Submitted-at: Mon, 11 Jun 2012 04:38:56 +0400
+Reviewed-on: http://review.cyanogenmod.com/17373
+Project: CyanogenMod/android_external_sonivox
+Branch: refs/heads/ics
