@@ -595,8 +595,14 @@ EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle,
             return EAS_ERROR_FILE_FORMAT;
         }
 
-        /* limit check  */
-        if ((dls.artCount == 0) || (dls.artCount > DLS_MAX_ART_COUNT))
+        /* limit check - warn user if artCount is 0 and use default articulations */
+        if ( dls.artCount ==  0 )
+        {
+            { /* dpp: EAS_ReportEx(_EAS_SEVERITY_WARNING, "DLS file contains 0 #articulations, using default.\n"); */ }
+        }
+
+        /* limit check */
+        if ( dls.artCount > DLS_MAX_ART_COUNT )
         {
             { /* dpp: EAS_ReportEx(_EAS_SEVERITY_ERROR, "DLS file contains invalid #articulations [%u]\n", dls.regionCount); */ }
             return EAS_ERROR_FILE_FORMAT;
