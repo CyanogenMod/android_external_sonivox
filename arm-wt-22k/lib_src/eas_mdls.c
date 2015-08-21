@@ -689,8 +689,10 @@ EAS_RESULT DLSParser (EAS_HW_DATA_HANDLE hwInstData, EAS_FILE_HANDLE fileHandle,
     }
 
     /* create the default articulation */
-    Convert_art(&dls, &defaultArt, 0);
-    dls.artCount = 1;
+    if (dls.pDLS) {
+        Convert_art(&dls, &defaultArt, 0);
+        dls.artCount = 1;
+    }
 
     /* parse the lins chunk and load instruments */
     dls.regionCount = dls.instCount = 0;
