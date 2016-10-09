@@ -32,8 +32,6 @@
  * includes
  *------------------------------------
 */
-#include "log/log.h"
-
 #include "eas_types.h"
 #include "eas_math.h"
 #include "eas_audioconst.h"
@@ -90,10 +88,6 @@ void WT_VoiceGain (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
 
     /* initialize some local variables */
     numSamples = pWTIntFrame->numSamples;
-    if (numSamples <= 0) {
-        ALOGE("b/26366256");
-        return;
-    }
     pMixBuffer = pWTIntFrame->pMixBuffer;
     pInputBuffer = pWTIntFrame->pAudioBuffer;
 
@@ -188,10 +182,6 @@ void WT_Interpolate (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
 
     /* initialize some local variables */
     numSamples = pWTIntFrame->numSamples;
-    if (numSamples <= 0) {
-        ALOGE("b/26366256");
-        return;
-    }
     pOutputBuffer = pWTIntFrame->pAudioBuffer;
 
     loopEnd = (const EAS_SAMPLE*) pWTVoice->loopEnd + 1;
@@ -285,10 +275,6 @@ void WT_InterpolateNoLoop (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
 
     /* initialize some local variables */
     numSamples = pWTIntFrame->numSamples;
-    if (numSamples <= 0) {
-        ALOGE("b/26366256");
-        return;
-    }
     pOutputBuffer = pWTIntFrame->pAudioBuffer;
 
     phaseInc = pWTIntFrame->frame.phaseIncrement;
@@ -377,10 +363,6 @@ void WT_VoiceFilter (S_FILTER_CONTROL *pFilter, S_WT_INT_FRAME *pWTIntFrame)
 
     /* initialize some local variables */
     numSamples = pWTIntFrame->numSamples;
-    if (numSamples <= 0) {
-        ALOGE("b/26366256");
-        return;
-    }
     pAudioBuffer = pWTIntFrame->pAudioBuffer;
 
     z1 = pFilter->z1;
@@ -444,10 +426,6 @@ void WT_VoiceFilter (S_FILTER_CONTROL *pFilter, S_WT_INT_FRAME *pWTIntFrame)
 
     /* initialize some local variables */
     numSamples = pWTIntFrame->numSamples;
-    if (numSamples <= 0) {
-        ALOGE("b/26366256");
-        return;
-    }
     pOutputBuffer = pWTIntFrame->pAudioBuffer;
     phaseInc = pWTIntFrame->frame.phaseIncrement;
 
@@ -591,10 +569,6 @@ void WT_InterpolateMono (S_WT_VOICE *pWTVoice, S_WT_INT_FRAME *pWTIntFrame)
     EAS_I8 *pLoopStart;
 
     numSamples = pWTIntFrame->numSamples;
-    if (numSamples <= 0) {
-        ALOGE("b/26366256");
-        return;
-    }
     pMixBuffer = pWTIntFrame->pMixBuffer;
 
     /* calculate gain increment */
